@@ -1,0 +1,29 @@
+from collections import Counter
+
+class TextStatistics:
+    def __init___(self, articles):
+        pass
+    
+    def get_top_3grams(self, texts):
+        ngrams = Counter()
+        for text in texts:
+            tokens = text.split()
+            ngrams.update([" ".join(tokens[i:i+3]) for i in xrange(len(tokens)-2)])
+        ngrams_list = []
+        ngrams_freq = []
+        for ngram, freq in ngrams.most_common():
+            ngrams_list.append(ngram)
+            ngrams_freq.append(freq)
+        return (ngrams_list, ngrams_freq)
+    
+    def get_top_words(self, texts):
+        words = Counter()
+        for text in texts:
+            tokens = text.split()
+            words.update(tokens)
+        words_list = []
+        words_freq = []
+        for word, freq in words.most_common():
+            words_list.append(word)
+            words_freq.append(freq)
+        return (words_list, words_freq)
