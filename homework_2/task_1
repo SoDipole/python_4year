@@ -1,0 +1,27 @@
+import re
+from pattern.web import Wikipedia, plaintext
+
+class WikiParser:
+    def __init__(self):
+        pass
+        
+    def get_articles(self, start):
+        articles = []
+        start_article = Wikipedia().article(start)
+        for link in start_article.links:
+            article = Wikipedia().article(link)
+            if article:
+                sections = []
+                for section in article.sections:
+                    text = plaintext(section.source).lower()
+                    text = self.__parce_text(text)
+                    sections.append(text)
+                articles.append(" ".join(sections))
+        return articles
+    
+    def __parce_text(self, text):
+        parced_text = re.sub("\[.+?\]", " ", text)
+        parced_text = re.sub("[^\w\s]|\d|\n", " ", parced_text)
+        parced_text = re.sub("\s{2,}", " ", parced_text)
+        parced_text = re.sub("(^\s)|(\s$)", "", parced_text)
+        return parced_text
