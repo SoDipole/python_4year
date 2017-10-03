@@ -5,9 +5,18 @@ from collections import Counter
 class WikiParser:
     def __init__(self):
         pass
+    
     def get_articles(self, start):
         articles = []
         start_article = Wikipedia().article(start)
+        
+        sections = []
+        for section in start_article.sections:
+            text = plaintext(section.source).lower()
+            text = self.__parce_text(text)
+            sections.append(text)
+        articles.append(" ".join(sections))
+        
         for link in start_article.links:
             article = Wikipedia().article(link)
             if article:
@@ -17,7 +26,6 @@ class WikiParser:
                     text = self.__parce_text(text)
                     sections.append(text)
                 articles.append(" ".join(sections))
-            break
         return articles
     
     def __parce_text(self, text):
@@ -62,3 +70,95 @@ class TextStatistics:
 class Experiment:
     def __init___(self):
         pass
+    
+    def show_results(self):
+        wp = WikiParser()
+        articles = wp.get_articles('Natural language processing')
+        
+        ts = TextStatistics(articles)
+        ngrams_list, ngrams_freq = ts.get_top_3grams(20)
+        print("--------------------------\nTop 20 3-grams:\n--------------------------")
+        for ngram, freq in zip(ngrams_list, ngrams_freq):
+            print(str(ngram) + " : " + str(freq))
+            
+        words_list, words_freq = ts.get_top_words(20)
+        print("--------------------------\nTop 20 words:\n--------------------------")
+        for ngram, freq in zip(words_list, words_freq):
+            print(str(ngram) + " : " + str(freq)) 
+            
+        ts_first = TextStatistics([articles[0]])
+        ngrams_list, ngrams_freq = ts_first.get_top_3grams(5)
+        print("--------------------------\nTop 5 3-grams:\n--------------------------")
+        for ngram, freq in zip(ngrams_list, ngrams_freq):
+            print(str(ngram) + " : " + str(freq))
+            
+        words_list, words_freq = ts_first.get_top_words(5)
+        print("--------------------------\nTop 5 words:\n--------------------------")
+        for ngram, freq in zip(words_list, words_freq):
+            print(str(ngram) + " : " + str(freq))
+            
+            
+"""
+--------------------------
+Top 20 3-grams:
+--------------------------
+from the original : 297
+natural language processing : 289
+archived from the : 287
+the use of : 234
+the original on : 231
+as well as : 224
+one of the : 208
+a b c : 175
+part of speech : 173
+the european union : 162
+such as the : 152
+of the european : 150
+proceedings of the : 149
+cambridge university press : 148
+the number of : 148
+a number of : 142
+for example the : 140
+university press isbn : 135
+a set of : 134
+based on the : 130
+--------------------------
+Top 20 words:
+--------------------------
+and : 16154
+is : 8739
+as : 5614
+that : 4872
+are : 4343
+or : 3876
+language : 3837
+s : 3587
+with : 3441
+be : 3433
+it : 2785
+this : 2510
+which : 2221
+can : 2002
+not : 1971
+i : 1838
+p : 1827
+also : 1810
+was : 1800
+english : 1768
+--------------------------
+Top 5 3-grams:
+--------------------------
+natural language processing : 13
+hand written rules : 6
+a chunk of : 6
+chunk of text : 6
+machine learning algorithms : 5
+--------------------------
+Top 5 words:
+--------------------------
+and : 66
+language : 57
+is : 49
+natural : 34
+as : 32
+"""
