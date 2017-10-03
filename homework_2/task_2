@@ -1,29 +1,33 @@
 from collections import Counter
 
 class TextStatistics:
-    def __init___(self, articles):
-        pass
+    def __init__(self, articles):
+        self.articles = articles
     
-    def get_top_3grams(self, texts):
+    def get_top_3grams(self, n):
         ngrams = Counter()
-        for text in texts:
+        for text in self.articles:
             tokens = text.split()
             ngrams.update([" ".join(tokens[i:i+3]) for i in xrange(len(tokens)-2)])
         ngrams_list = []
         ngrams_freq = []
-        for ngram, freq in ngrams.most_common():
+        for ngram, freq in ngrams.most_common()[:n]:
             ngrams_list.append(ngram)
             ngrams_freq.append(freq)
         return (ngrams_list, ngrams_freq)
     
-    def get_top_words(self, texts):
+    def get_top_words(self, n):
+        stop_list = ["the", "a", "an", "on", "in", "at", "since", "for", "ago", 
+                         "before", "to", "past", "to", "till", "by", "beside", "under", 
+                         "below", "over", "above", "across", "through", "into", "towards", 
+                         "onto", "from", "of", "off", "until"]        
         words = Counter()
-        for text in texts:
+        for text in self.articles:
             tokens = text.split()
-            words.update(tokens)
+            words.update([token for token in tokens if token not in stop_list])
         words_list = []
         words_freq = []
-        for word, freq in words.most_common():
+        for word, freq in words.most_common()[:n]:
             words_list.append(word)
             words_freq.append(freq)
         return (words_list, words_freq)
